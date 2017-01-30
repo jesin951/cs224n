@@ -66,8 +66,6 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     labels[target] = 1
 
     gradPred = (probabilities - labels).dot(outputVectors)
-    # V, D = outputVectors.shape
-    # grad = (scores - labels).reshape(V, 1).dot(predicted.reshape(D, 1).T)
     grad = np.outer(probabilities - labels, predicted)
     ### END YOUR CODE
 
@@ -125,7 +123,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # grad
     grad = np.zeros_like(outputVectors)
     grad[target] = - (1-p) * predicted
-    for sample_index, grad_index in enumerate(indices):
+    for sample_index, grad_index in enumerate(indices[1:K+1]):
         grad[grad_index] += (1-qs)[sample_index] * predicted
 
     ### END YOUR CODE
@@ -195,7 +193,20 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    pass
+    target = tokens[currentWord]
+
+    v = np.zeros_like(gradIn[0])
+    for word in contextWords:
+        index = tokens[word]
+        v += inputVectors[index]
+
+    cost, currentGradIn, gradOut = \
+        word2vecCostAndGradient(v, target, outputVectors, dataset)
+
+    for word in contextWords:
+        index = tokens[word]
+        gradIn[index] += currentGradIn
+
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
