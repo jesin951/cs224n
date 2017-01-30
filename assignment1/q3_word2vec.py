@@ -113,7 +113,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     sigma = u_o.T.dot(predicted)
     p = sigmoid(sigma)
 
-    samples = outputVectors[indices, :]
+    samples = outputVectors[indices[1:K+1], :]
     phis = - samples.dot(predicted)
     qs = sigmoid(phis)
 
@@ -195,16 +195,6 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    # currentIndex = tokens[currentWord]
-    # predicted = inputVectors[currentIndex]
-    # v = np.zeros_like(predicted)
-    # for word in contextWords:
-    #     index = tokens[word]
-    #     v += inputVectors[index]
-    #
-    # target = tokens[word]
-    # cost, gradIn[currentIndex], gradOut = \
-    #     word2vecCostAndGradient(v, target, outputVectors, dataset)
     pass
     ### END YOUR CODE
 
