@@ -246,7 +246,7 @@ class ParserModel(Model):
         self.build()
 
 
-def main(debug=True):
+def main(debug=False):
     print(80 * "=")
     print("INITIALIZING")
     print(80 * "=")
@@ -275,7 +275,7 @@ def main(debug=True):
             print(80 * "=")
             print("TRAINING")
             print(80 * "=")
-            model.fit(session, saver, parser, train_examples, dev_set)
+            #model.fit(session, saver, parser, train_examples, dev_set)
 
             if not debug:
                 print(80 * "=")
@@ -283,11 +283,11 @@ def main(debug=True):
                 print(80 * "=")
                 print("Restoring the best model weights found on the dev set")
                 saver.restore(session, './data/weights/parser.weights')
-                print("Final evaluation on test set",
-                UAS, dependencies = parser.parse(test_set))
+                print("Final evaluation on test set")
+                UAS, dependencies = parser.parse(test_set)
                 print("- test UAS: {:.2f}".format(UAS * 100.0))
                 print("Writing predictions")
-                with open('q2_test.predicted.pkl', 'w') as f:
+                with open('q2_test.predicted.pkl', 'wb') as f:
                     pickle.dump(dependencies, f, -1)
                 print("Done!")
 
