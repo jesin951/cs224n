@@ -65,7 +65,27 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         # be defined elsewhere!
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
-            pass
+            xavier = tf.contrib.layers.xavier_initializer()
+            constant = tf.constant_initializer(0)
+            # Shapes
+            W_shape = [self.state_size, self.state_size]
+            U_shape = [self.input_size, self.state_size]
+            bias_shape = [self.state_size,]
+            # Variables
+            W_r = tf.get_variable("W_r", shape = W_shape, initializer = xavier)
+            U_r = tf.get_variable("U_r", shape = U_shape, initializer = xavier)
+            b_r = tf.get_variable("b_r", shape = bias_shape, initializer = constant)
+            W_z = tf.get_variable("W_z", shape = W_shape, initializer = xavier)
+            U_z = tf.get_variable("U_z", shape = U_shape, initializer = xavier)
+            b_z = tf.get_variable("b_z", shape = bias_shape, initializer = constant)
+            W_o = tf.get_variable("W_o", shape = W_shape, initializer = xavier)
+            U_o = tf.get_variable("U_o", shape = U_shape, initializer = xavier)
+            b_o = tf.get_variable("b_o", shape = bias_shape, initializer = constant)
+            # Computation
+            z_t = tf.sigmoid( tf.matmul(inputs, U_z) + tf.matmul(state, W_z) + b_z )
+            r_t = tf.sigmoid( tf.matmul(inputs, U_r) + tf.matmul(state, W_r) + b_r )
+            o_t = tf.tanh( tf.matmul(inputs, U_o) + tf.matmul(r_t * state, W_o) + b_o )
+            new_state = z_t * state + (1-z_t) * o_t
             ### END YOUR CODE ###
         # For a GRU, the output and state are the same (N.B. this isn't true
         # for an LSTM, though we aren't using one of those in our

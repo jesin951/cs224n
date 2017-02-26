@@ -162,13 +162,13 @@ class WindowModel(NERModel):
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
         ### YOUR CODE HERE (~5-10 lines)
-        d = {
+        dictionary = {
             self.input_placeholder: inputs_batch,
             self.labels_placeholder: labels_batch,
             self.dropout_placeholder: dropout
-            }
+        }
         # filter out keys with None values
-        feed_dict = { key: value for key, value in d.items() if value != None }
+        feed_dict = { key: value for key, value in dictionary.items() if value is not None }
         ### END YOUR CODE
         return feed_dict
 
@@ -228,11 +228,11 @@ class WindowModel(NERModel):
         W = tf.get_variable("W", shape = W_shape, initializer = xavier_initializer)
         b1 = tf.get_variable("b1", shape = [self.config.hidden_size])
         U_shape = (self.config.hidden_size, self.config.n_classes)
+        U = tf.get_variable("U", shape = U_shape, initializer = xavier_initializer)
         b2 = tf.get_variable("b2", shape = [self.config.n_classes])
         # Computation Graph
-        U = tf.get_variable("U", shape = U_shape, initializer = xavier_initializer)
         h = tf.nn.relu(tf.matmul(x,W) + b1)
-        h_drop = tf.nn.dropout(h, self.config.dropout)
+        h_drop = tf.nn.dropout(h, dropout_rate)
         pred = tf.matmul(h_drop, U) + b2
         ### END YOUR CODE
         return pred
